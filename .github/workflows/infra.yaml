@@ -71,10 +71,10 @@ jobs:
 
       - name: Sincronizar o aplicativo no ArgoCD
         run: |
-        # Forçar a sincronização para aplicar o manifesto no cluster
-          argocd app sync my-node-app
+          # Forçar a sincronização para aplicar o manifesto no cluster
+            argocd app sync my-node-app
 
       # Passo para verificar se a aplicação foi sincronizada com sucesso
-        - name: Verificar o status do aplicativo no ArgoCD
+      - name: Verificar o status do aplicativo no ArgoCD
         run: |
-          argocd app wait my-node-app --health --timeout 600
+            argocd app wait my-node-app --health --timeout 600
