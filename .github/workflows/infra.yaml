@@ -37,7 +37,8 @@ jobs:
         run: |
           mkdir -p $HOME/bin
           sudo wget https://github.com/mikefarah/yq/releases/download/v4.15.1/yq_linux_amd64 -O $HOME/bin/yq
-         
+          sudo chmod +x $HOME/bin/yq
+          echo "$HOME/bin" >> $GITHUB_PATH
           yq --version
 
       - name: Gerar manifestos do Kubernetes com Helm
