@@ -35,10 +35,10 @@ jobs:
  
       - name: Install yq
         run: |
-          mkdir -p $HOME/bin
-          wget https://github.com/mikefarah/yq/releases/download/v4.15.1/yq_linux_amd64 -O $HOME/bin/yq
-          chmod +x $HOME/bin/yq
-          echo "$HOME/bin" >> $GITHUB_PATH
+          mkdir -p $GITHUB_WORKSPACE/bin
+          wget https://github.com/mikefarah/yq/releases/download/v4.15.1/yq_linux_amd64 -O $GITHUB_WORKSPACE/bin/yq
+          chmod +x $GITHUB_WORKSPACE/bin
+          echo "$GITHUB_WORKSPACE/bin" >> $GITHUB_PATH
           yq --version
 
       - name: Gerar manifestos do Kubernetes com Helm
