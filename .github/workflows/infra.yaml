@@ -57,7 +57,7 @@ jobs:
           chmod +x /usr/local/bin/argocd
 
           # Login no ArgoCD usando um token
-          argocd login http://82.25.79.79:31295 --username admin --password ${{ secrets.ARGOCD_PASSWORD }} --insecure --grpc-web
+          argocd login 82.25.79.79:31295 --username admin --password ${{ secrets.ARGOCD_PASSWORD }} --insecure --grpc-web
 
         
           argocd app create my-node-app \
