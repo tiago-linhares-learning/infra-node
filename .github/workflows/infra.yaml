@@ -17,7 +17,10 @@ jobs:
     steps:
       - name: Checkout código
         uses: actions/checkout@v2
-
+        with:
+          repository: tiago-linhares-learning/infra-node
+          path: infra-repo
+          
       - name: Instalar Helm
         run: |
           curl -sSL https://get.helm.sh/helm-v3.8.0-linux-amd64.tar.gz -o helm.tar.gz
@@ -40,7 +43,7 @@ jobs:
 
 
           helm create my-node-app
-          helm template my-node-app ./infra-repo/charts/my-node-app --set image.tag=${{ github.sha }} > infra-repo/k8s/deployments/my-node-app.yaml
+          helm template my-node-app ./infra-repo/charts/my-node-app --set image.tag=${{ github.sha }} > infra-repo/k8s/deployments/ p.yaml
           cat infra-repo/k8s/deployments/my-node-app.yaml
 
 
