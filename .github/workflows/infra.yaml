@@ -47,7 +47,7 @@ jobs:
 
           mkdir -p infra-repo/k8s/deployments
 
-          IMAGE=$(yq e '.image.tag' infra-repo/charts/my-node-app/values.yaml)
+          IMAGE=$(yq e '.image.tag' infra-repo/charts/my-node-app/Chart.yaml)
           echo "--------"
           echo $IMAGE
 
