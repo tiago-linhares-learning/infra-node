@@ -1,1 +1,49 @@
-
+---
+# Source: my-node-app/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-node-app-service
+spec:
+  selector:
+    app: my-node-app
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30080
+  type: NodePort
+---
+# Source: my-node-app/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-node-app-deployment
+  labels:
+    app: my-node-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-node-app
+  template:
+    metadata:
+      labels:
+        app: my-node-app
+    spec:
+      containers:
+        - name: my-node-app
+          image: "tiagolinhares/my-node-app:c4060a6947f350e661eb7f090a870f820ed83eaa"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+          resources:
+            {}
