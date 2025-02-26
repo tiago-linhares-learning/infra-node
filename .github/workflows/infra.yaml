@@ -32,21 +32,21 @@ jobs:
 
       - name: Adicionar Repositório de Chart do Helm
         run: |
-        helm repo add bitnami https://charts.bitnami.com/bitnami
-        helm repo update
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo update
 
 
 
       - name: Gerar manifestos do Kubernetes com Helm
         run: |
-        ls -R infra-repo/charts/my-node-app
+          ls -R infra-repo/charts/my-node-app
 
-        mkdir -p infra-repo/k8s/deployments
+          mkdir -p infra-repo/k8s/deployments
 
 
-        helm create my-node-app
-        helm template my-node-app ./infra-repo/charts/my-node-app --set image.tag=${{ github.sha }} > infra-repo/k8s/deployments/my-node-app.yaml
-        cat infra-repo/k8s/deployments/my-node-app.yaml
+          helm create my-node-app
+          helm template my-node-app ./infra-repo/charts/my-node-app --set image.tag=${{ github.sha }} > infra-repo/k8s/deployments/my-node-app.yaml
+          cat infra-repo/k8s/deployments/my-node-app.yaml
 
 
 
@@ -59,15 +59,15 @@ jobs:
           chmod +x /usr/local/bin/argocd
 
       
-        argocd login 82.25.79.79:31295 --username admin --password ${{ secrets.ARGOCD_PASSWORD }} --insecure
+          argocd login 82.25.79.79:31295 --username admin --password ${{ secrets.ARGOCD_PASSWORD }} --insecure
 
-       
-        argocd app create my-node-app \
-          --repo https://github.com/tiago-linhares-learning/infra-node.git \
-          --path k8s/deployments \
-          --dest-server https://kubernetes.default.svc \
-          --dest-namespace default \
-          --sync-policy automated  # Sincronização automática
+        
+          argocd app create my-node-app \
+            --repo https://github.com/tiago-linhares-learning/infra-node.git \
+            --path k8s/deployments \
+            --dest-server https://kubernetes.default.svc \
+            --dest-namespace default \
+            --sync-policy automated  # Sincronização automática
 
       - name: Sincronizar o aplicativo no ArgoCD
         run: |
