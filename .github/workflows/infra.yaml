@@ -15,13 +15,8 @@ jobs:
       ACTIONS_STEP_DEBUG: true  
       ACTIONS_DEBUG: true  
     steps:
-      - name: Checkout do Repositório de Infraestrutura
+      - name: Checkout código
         uses: actions/checkout@v2
-        with:
-          repository: tiago-linhares-learning/infra-node
-          token: ${{ secrets.MY_GITHUB_TOKEN }}
-          ref: main
-          path: infra-repo
 
       - name: Instalar Helm
         run: |
