@@ -40,13 +40,7 @@ jobs:
           chmod +x $GITHUB_WORKSPACE/bin
           chmod +x $GITHUB_WORKSPACE/bin/yq
           echo "$GITHUB_WORKSPACE/bin" >> $GITHUB_PATH
-          ls $GITHUB_WORKSPACE/bin
-          echo "--------"
           
-          ls $GITHUB_WORKSPACE/bin/yq
-
-          $GITHUB_WORKSPACE/bin/yq --version
-
       - name: Gerar manifestos do Kubernetes com Helm
         run: |
           ls -R infra-repo/charts/my-node-app
@@ -54,7 +48,8 @@ jobs:
           mkdir -p infra-repo/k8s/deployments
 
           IMAGE=$(yq e '.image.tag' infra-repo/charts/my-node-app/values.yaml)
-
+          echo "--------"
+          echo $IMAGE
 
           helm create my-node-app
           helm template my-node-app ./infra-repo/charts/my-node-app --set image.tag=$IMAGE > infra-repo/k8s/deployments/my-node-app.yaml
