@@ -6,74 +6,74 @@ on:
       - main
   
   workflow_dispatch:
-  jobs:
-  Setup-Node:
-    runs-on: self-hosted  
-    env:
-      ACTIONS_RUNNER_DEBUG: true  
-      ACTIONS_STEP_DEBUG: true  
-      ACTIONS_DEBUG: true  
-    steps:
-    - name: Checkout do Repositório de Infraestrutura
-      uses: actions/checkout@v2
-      with:
-        repository: tiago-linhares-learning/infra-node
-        token: ${{ secrets.MY_GITHUB_TOKEN }}
-        ref: main
-        path: infra-repo
-        
-    - name: Instalar Helm
-      run: |
-        curl -sSL https://get.helm.sh/helm-v3.8.0-linux-amd64.tar.gz -o helm.tar.gz
-        tar -zxvf helm.tar.gz
-        sudo mv linux-amd64/helm /usr/local/bin/helm
-        helm version  # Verifica se o Helm foi instalado corretamente
+jobs:
+Setup-Node:
+runs-on: self-hosted  
+env:
+  ACTIONS_RUNNER_DEBUG: true  
+  ACTIONS_STEP_DEBUG: true  
+  ACTIONS_DEBUG: true  
+steps:
+- name: Checkout do Repositório de Infraestrutura
+  uses: actions/checkout@v2
+  with:
+    repository: tiago-linhares-learning/infra-node
+    token: ${{ secrets.MY_GITHUB_TOKEN }}
+    ref: main
+    path: infra-repo
+    
+- name: Instalar Helm
+  run: |
+    curl -sSL https://get.helm.sh/helm-v3.8.0-linux-amd64.tar.gz -o helm.tar.gz
+    tar -zxvf helm.tar.gz
+    sudo mv linux-amd64/helm /usr/local/bin/helm
+    helm version  # Verifica se o Helm foi instalado corretamente
 
-    - name: Adicionar Repositório de Chart do Helm
-      run: |
-        helm repo add bitnami https://charts.bitnami.com/bitnami
-        helm repo update
+- name: Adicionar Repositório de Chart do Helm
+  run: |
+    helm repo add bitnami https://charts.bitnami.com/bitnami
+    helm repo update
+
+
+
+- name: Gerar manifestos do Kubernetes com Helm
+  run: |
+    ls -R infra-repo/charts/my-node-app
+
+    mkdir -p infra-repo/k8s/deployments
     
     
+    helm create my-node-app
+    helm template my-node-app ./infra-repo/charts/my-node-app --set image.tag=${{ github.sha }} > infra-repo/k8s/deployments/my-node-app.yaml
+    cat infra-repo/k8s/deployments/my-node-app.yaml
 
-    - name: Gerar manifestos do Kubernetes com Helm
-      run: |
-        ls -R infra-repo/charts/my-node-app
 
-        mkdir -p infra-repo/k8s/deployments
-        
-        
-        helm create my-node-app
-        helm template my-node-app ./infra-repo/charts/my-node-app --set image.tag=${{ github.sha }} > infra-repo/k8s/deployments/my-node-app.yaml
-        cat infra-repo/k8s/deployments/my-node-app.yaml
 
-    
+- name: Criar o aplicativo no ArgoCD
+  run: |
+    # Baixar o ArgoCD CLI
+    curl -sSL -o /tmp/argocd https://github.com/argoproj/argo-cd/releases/download/v2.2.2/argocd-linux-amd64
+    sudo mv /tmp/argocd /usr/local/bin/argocd
+    sudo chmod +x /usr/local/bin/argocd
+    chmod +x /usr/local/bin/argocd
 
-    - name: Criar o aplicativo no ArgoCD
-      run: |
-        # Baixar o ArgoCD CLI
-        curl -sSL -o /tmp/argocd https://github.com/argoproj/argo-cd/releases/download/v2.2.2/argocd-linux-amd64
-        sudo mv /tmp/argocd /usr/local/bin/argocd
-        sudo chmod +x /usr/local/bin/argocd
-        chmod +x /usr/local/bin/argocd
+    # Login no ArgoCD usando um token
+    argocd login 82.25.79.79:31295 --username admin --password ${{ secrets.ARGOCD_PASSWORD }} --insecure
 
-        # Login no ArgoCD usando um token
-        argocd login 82.25.79.79:31295 --username admin --password ${{ secrets.ARGOCD_PASSWORD }} --insecure
+    # Criar o aplicativo no ArgoCD, apontando para o repositório e diretório onde os manifestos estão
+    argocd app create my-node-app \
+      --repo https://github.com/tiago-linhares-learning/infra-node.git \
+      --path k8s/deployments \
+      --dest-server https://kubernetes.default.svc \
+      --dest-namespace default \
+      --sync-policy automated  # Sincronização automática
 
-        # Criar o aplicativo no ArgoCD, apontando para o repositório e diretório onde os manifestos estão
-        argocd app create my-node-app \
-          --repo https://github.com/tiago-linhares-learning/infra-node.git \
-          --path k8s/deployments \
-          --dest-server https://kubernetes.default.svc \
-          --dest-namespace default \
-          --sync-policy automated  # Sincronização automática
+- name: Sincronizar o aplicativo no ArgoCD
+  run: |
+    # Forçar a sincronização para aplicar o manifesto no cluster
+    argocd app sync my-node-app
 
-    - name: Sincronizar o aplicativo no ArgoCD
-      run: |
-        # Forçar a sincronização para aplicar o manifesto no cluster
-        argocd app sync my-node-app
-
-    # Passo para verificar se a aplicação foi sincronizada com sucesso
-    - name: Verificar o status do aplicativo no ArgoCD
-      run: |
-        argocd app wait my-node-app --health --timeout 600
+# Passo para verificar se a aplicação foi sincronizada com sucesso
+- name: Verificar o status do aplicativo no ArgoCD
+  run: |
+    argocd app wait my-node-app --health --timeout 600
