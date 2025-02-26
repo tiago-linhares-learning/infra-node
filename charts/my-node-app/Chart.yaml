@@ -1,4 +1,4 @@
 apiVersion: v2
 name: my-node-app
-version: v1.0.4-7287cab2287b1146f4e782947646ac1b828a9357
+version: v1.0.4-b9bfc9a3c13b5d2b83250250abf117568a9ebdbf
 description: A Helm chart for Kubernetes deployment of my-node-app
