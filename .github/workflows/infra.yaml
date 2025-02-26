@@ -47,7 +47,7 @@ jobs:
           mkdir -p infra-repo/k8s/deployments
 
           IMAGE=$(yq e '.version' infra-repo/charts/my-node-app/Chart.yaml)
-          
+          IMAGE=$(echo "$IMAGE" | sed 's/^[^ ]*-//')
 
           helm create my-node-app
           helm template my-node-app ./infra-repo/charts/my-node-app --set image.tag=$IMAGE > infra-repo/k8s/deployments/my-node-app.yaml
