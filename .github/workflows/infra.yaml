@@ -36,12 +36,13 @@ jobs:
       - name: Install yq
         run: |
           mkdir -p $GITHUB_WORKSPACE/bin
-          wget https://github.com/mikefarah/yq/releases/download/v4.15.1/yq_linux_amd64 -O $GITHUB_WORKSPACE/bin
+          wget https://github.com/mikefarah/yq/releases/download/v4.15.1/yq_linux_amd64 -O $GITHUB_WORKSPACE/bin/yq
           chmod +x $GITHUB_WORKSPACE/bin
+          chmod +x $GITHUB_WORKSPACE/bin/yq
           echo "$GITHUB_WORKSPACE/bin" >> $GITHUB_PATH
           ls $GITHUB_WORKSPACE/bin
           echo "--------"
-          pwd
+          
           ls $GITHUB_WORKSPACE/bin/yq
 
           $GITHUB_WORKSPACE/bin/yq --version
