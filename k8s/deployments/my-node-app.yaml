@@ -22,7 +22,7 @@ metadata:
   labels:
     app: my-node-app
 spec:
-  replicas: 1
+  replicas: 5
   selector:
     matchLabels:
       app: my-node-app
