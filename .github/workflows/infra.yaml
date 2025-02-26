@@ -41,7 +41,9 @@ jobs:
           echo "$GITHUB_WORKSPACE/bin" >> $GITHUB_PATH
           ls $GITHUB_WORKSPACE/bin
           echo "--------"
+          pwd
           ls $GITHUB_WORKSPACE/bin/yq
+
           $GITHUB_WORKSPACE/bin/yq --version
 
       - name: Gerar manifestos do Kubernetes com Helm
