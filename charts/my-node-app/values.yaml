@@ -1,4 +1,4 @@
-replicaCount: 7
+replicaCount: 2
 
 image:
   repository: tiagolinhares/my-node-app
