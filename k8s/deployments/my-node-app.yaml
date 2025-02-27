@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
         - name: my-node-app
-          image: "tiagolinhares/my-node-app:d9efbef01835bce39ad74896cf048c10c73abec9"
+          image: "tiagolinhares/my-node-app:dfda56578dba51cd96537358c7d345799298008c"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
