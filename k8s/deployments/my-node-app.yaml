@@ -22,7 +22,7 @@ metadata:
   labels:
     app: my-node-app
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: my-node-app
@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
         - name: my-node-app
-          image: "tiagolinhares/my-node-app:f706c613195a8c0e3077cad5de2a72c44760a0c2"
+          image: "tiagolinhares/my-node-app:46a6875a12a13877dca2d087848b5828fa6b7b3c"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
